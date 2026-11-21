@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pass or Blast</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ========== Top bar ========== -->
+  <header class="bar">
+    <div class="logo" aria-label="Pass or Blast">
+      <span class="stamp pass">Pass</span><span class="or">or</span><span class="stamp blast">Blast</span>
+    </div>
+    <button id="muteBtn" class="icon-btn" aria-label="Turn sound off">&#128266;</button>
+  </header>
+
+  <!-- ========== Game area ========== -->
+  <main class="game">
+
+    <!-- HUD: Player Name, Lives, Score (+ time and professors left) -->
+    <div class="hud">
+      <div class="stat name"><span>Student</span><b id="hudName">Student</b></div>
+      <div class="stat"><span>Score</span><b id="hudScore">0</b></div>
+      <div class="stat lives"><span>Lives</span><b id="hudLives">&hearts;&hearts;&hearts;</b></div>
+      <div class="stat"><span>Time</span><b id="hudTime">2:30</b></div>
+      <div class="stat"><span>Profs</span><b id="hudProfs">3</b></div>
+    </div>
+
+    <div id="stage">
+      <canvas id="board" width="528" height="528" role="img" aria-label="Classroom grid with the student, desks and professors"></canvas>
+      <div id="toast" aria-live="polite"></div>
+    </div>
+
+    <!-- Virtual D-pad + Drop Assignment button (touch and mouse) -->
+    <div class="controls">
+      <div class="dpad" aria-label="Direction pad">
+        <button class="d up" data-dir="up" aria-label="Move up"></button>
+        <button class="d left" data-dir="left" aria-label="Move left"></button>
+        <button class="d right" data-dir="right" aria-label="Move right"></button>
+        <button class="d down" data-dir="down" aria-label="Move down"></button>
+      </div>
+      <button id="dropBtn" class="drop-btn" aria-label="Drop assignment">
+        <span class="em" aria-hidden="true">&#128211;</span>
+        Drop assignment
+      </button>
+    </div>
+  </main>
+
+  <!-- ========== Dean's Lister Honor Roll (leaderboard) ========== -->
+  <footer class="honor">
+    <h2>&#127891; Dean&rsquo;s Lister Honor Roll</h2>
+    <p class="honor-sub">Top scholars on this device</p>
+    <ol id="honorList"></ol>
+    <p id="honorEmpty" class="honor-empty">No scholars yet. Finish a game to take the first spot!</p>
+    <button id="clearRollBtn" class="link-btn" type="button">Clear honor roll</button>
+  </footer>
+</div>
+
+<!-- ========== Student Portal Login modal (start screen) ========== -->
+<div id="loginModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="card">
+    <h1 id="loginTitle" class="logo big">
+      <span class="stamp pass">Pass</span><span class="or">or</span><span class="stamp blast">Blast</span>
+    </h1>
+    <p class="sub">Classroom Survival Arcade &middot; Web Development</p>
+
+    <form id="loginForm" novalidate>
+      <label for="nameInput">Student portal login</label>
+      <input id="nameInput" type="text" maxlength="16" autocomplete="nickname" placeholder="Type your name">
+      <p id="nameError" class="err" role="alert"></p>
+      <button class="btn primary big" type="submit">Start game</button>
+    </form>
+
+    <section class="howto">
+      <h2>How to play</h2>
+      <ul>
+        <li><span class="tag">Move</span><span><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>. On a phone or tablet, use the on-screen D-pad.</span></li>
+        <li><span class="tag">Drop</span><span>Press <kbd>Space</kbd> or tap <b>Drop assignment</b>. Your notebook &#128211; ticks, then blasts in a cross shape.</span></li>
+        <li><span class="tag">Score</span><span>Desk &#129681; +50, professor +200, clear every professor +1000.</span></li>
+        <li><span class="tag">Win</span><span>Grade every professor before the clock runs out.</span></li>
+        <li><span class="tag">Lose</span><span>You have 3 lives. You lose one if a professor catches you, your own blast hits you, or time runs out.</span></li>
+        <li><span class="tag">Tip</span><span>Pillars &#127963;&#65039; stop blasts, so duck behind them. Professors speed up as fewer remain.</span></li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<!-- ========== Game Over / Result modal with Restart button ========== -->
+<div id="resultModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden>
+  <div id="resultCard" class="card result">
+    <div id="grade" class="grade" aria-hidden="true">F</div>
+    <h2 id="resultTitle">Game over</h2>
+    <p id="resultMsg"></p>
+    <div class="result-stats">
+      <div><span>Final score</span><b id="resultScore">0</b></div>
+      <div><span>Professors graded</span><b id="resultProfs">0/3</b></div>
+    </div>
+    <p id="rankLine" class="rank-line"></p>
+    <div class="btn-row">
+      <button id="againBtn" class="btn primary" type="button">Play again</button>
+      <button id="changeBtn" class="btn" type="button">Change student</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

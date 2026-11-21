@@ -1,0 +1,217 @@
+/* ============================================================
+   PASS OR BLAST - styles
+   Academic navy + gold, notebook-paper background, retro arcade HUD
+   ============================================================ */
+:root{
+  --navy:#12234a; --navy2:#1d3a75; --ink:#0b1630;
+  --parchment:#fbf3dc; --gold:#ffc83d; --gold-dark:#7a5a1a;
+  --maroon:#8c1d2f; --pass:#1f8a4c; --blast:#c62f2f; --muted:#6b5f45;
+  --serif:Georgia,"Times New Roman",serif;
+  --arcade:"Courier New",ui-monospace,Menlo,monospace;
+  --body:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --stamp:Impact,"Haettenschweiler","Arial Black",sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{color-scheme:dark}
+body{
+  margin:0; min-height:100vh; min-height:100dvh;
+  background-color:var(--navy);
+  /* faint notebook lines and a red margin line */
+  background-image:
+    linear-gradient(90deg,transparent 40px,rgba(255,110,110,.2) 40px,rgba(255,110,110,.2) 42px,transparent 42px),
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:100% 100%,100% 28px;
+  color:var(--parchment); font-family:var(--body);
+  overscroll-behavior:none; -webkit-tap-highlight-color:transparent;
+}
+:focus-visible{outline:4px solid var(--gold); outline-offset:3px}
+.app{max-width:600px; margin:0 auto; padding:max(12px,env(safe-area-inset-top)) 14px max(28px,env(safe-area-inset-bottom))}
+
+/* ---------- Logo made of two grade stamps ---------- */
+.logo{margin:0; display:flex; align-items:center; justify-content:center; gap:.35em; --s:clamp(1.5rem,7vw,2.1rem); --pc:#6ee7a0; --bc:#ff8a7d}
+.logo.big{--s:clamp(2.6rem,13.5vw,4.4rem); --pc:var(--pass); --bc:var(--blast); margin-bottom:4px}
+.stamp{
+  display:inline-block; font:400 var(--s)/1 var(--stamp); text-transform:uppercase; letter-spacing:.05em;
+  padding:.06em .22em; border:.08em solid currentColor; border-radius:.14em;
+}
+.stamp.pass{color:var(--pc); transform:rotate(-4deg)}
+.stamp.blast{color:var(--bc); transform:rotate(3deg)}
+.or{font:italic 400 calc(var(--s)*.55) var(--serif); color:inherit}
+
+.bar{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
+.icon-btn{
+  width:46px; height:42px; padding:0; font-size:1.2rem; cursor:pointer; color:var(--gold);
+  background:var(--ink); border:2px solid var(--gold); border-radius:12px; box-shadow:0 4px 0 #070e20;
+  touch-action:manipulation;
+}
+.icon-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #070e20}
+
+/* ---------- HUD ---------- */
+.hud{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-bottom:12px}
+.stat{
+  grid-column:span 1; min-width:0; text-align:center; padding:4px 5px 5px;
+  background:var(--ink); border:2px solid var(--gold); border-radius:10px;
+}
+.stat.name{grid-column:span 2}
+.stat span{display:block; font-size:.68rem; font-weight:700; color:#a9b6d6}
+.stat b{
+  display:block; font:700 clamp(.95rem,4.4vw,1.25rem)/1.25 var(--arcade); color:var(--gold);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.stat.lives b{color:#ff7d8c}
+.stat.low b{color:#ff6b5e; animation:blink .7s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+
+/* ---------- Board ---------- */
+#stage{
+  position:relative; margin:0 auto; aspect-ratio:1;
+  width:min(100%, max(250px, calc(100vh - 340px)));
+  width:min(100%, max(250px, calc(100dvh - 340px)));
+  border:5px solid var(--ink); border-radius:14px; overflow:hidden; background:#e6d8b3;
+  box-shadow:0 0 0 3px var(--gold), 0 10px 0 3px #070e20;
+}
+#stage.smack{box-shadow:0 0 0 3px var(--gold), 0 0 30px 8px rgba(255,60,60,.95), 0 10px 0 3px #070e20}
+#board{display:block; width:100%; height:100%; user-select:none; -webkit-user-select:none}
+#toast{
+  position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); pointer-events:none;
+  max-width:96%; text-align:center; font:400 clamp(1.5rem,7vw,2.4rem)/1.05 var(--stamp); letter-spacing:.04em; text-transform:uppercase;
+  color:#fff; -webkit-text-stroke:6px var(--ink); paint-order:stroke fill; text-shadow:0 4px 0 var(--ink);
+  opacity:0; transition:opacity .25s;
+}
+#toast.show{opacity:1; animation:pop .35s ease-out}
+@keyframes pop{from{transform:translate(-50%,-50%) scale(.6)}to{transform:translate(-50%,-50%) scale(1)}}
+
+/* ---------- On-screen controls ---------- */
+.controls{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:22px 4px 0; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none}
+.dpad{
+  --pad:clamp(50px,16vw,64px);
+  display:grid; gap:5px;
+  grid-template-columns:repeat(3,var(--pad)); grid-template-rows:repeat(3,var(--pad));
+  grid-template-areas:". up ." "left . right" ". down .";
+}
+.d{
+  display:grid; place-items:center; padding:0; cursor:pointer; color:var(--gold);
+  background:var(--navy2); border:3px solid var(--ink); border-radius:14px;
+  box-shadow:0 4px 0 var(--ink); touch-action:none;
+}
+.d::after{content:""; width:44%; height:44%; background:currentColor; clip-path:polygon(50% 8%,94% 90%,6% 90%)}
+.d.up{grid-area:up} .d.down{grid-area:down} .d.left{grid-area:left} .d.right{grid-area:right}
+.d.down::after{transform:rotate(180deg)} .d.left::after{transform:rotate(-90deg)} .d.right::after{transform:rotate(90deg)}
+.d.active{background:var(--gold); color:var(--ink); transform:translateY(3px); box-shadow:0 1px 0 var(--ink)}
+.drop-btn{
+  min-width:clamp(116px,36vw,146px); height:clamp(84px,24vw,100px); padding:6px 10px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  font:700 .86rem/1.1 var(--arcade); color:#fff; text-align:center;
+  background:var(--maroon); border:4px solid var(--ink); border-radius:22px; box-shadow:0 7px 0 var(--ink);
+  touch-action:none;
+}
+.drop-btn .em{font-size:2rem; line-height:1}
+.drop-btn.active{transform:translateY(5px); box-shadow:0 2px 0 var(--ink)}
+
+/* Phones held sideways: pad left, button right, board in the middle */
+@media (orientation:landscape) and (max-height:520px){
+  .app{max-width:none}
+  .game{display:grid; grid-template-columns:auto 1fr auto; grid-template-areas:"hud hud hud" "pad stage drop"; align-items:center; column-gap:14px}
+  .hud{grid-area:hud; margin-bottom:8px}
+  #stage{grid-area:stage; width:min(100%, calc(100vh - 150px))}
+  .controls{display:contents}
+  .dpad{grid-area:pad; --pad:52px}
+  .drop-btn{grid-area:drop}
+}
+
+/* ---------- Dean's Lister Honor Roll ---------- */
+.honor{
+  margin-top:30px; padding:16px 14px 14px; color:var(--ink); background:var(--parchment);
+  border:6px double var(--gold-dark); border-radius:14px; box-shadow:0 0 0 3px var(--gold);
+}
+.honor h2{margin:0; text-align:center; font:700 clamp(1.15rem,5vw,1.5rem) var(--serif)}
+.honor-sub{margin:2px 0 12px; text-align:center; font-size:.85rem; color:var(--muted); font-style:italic}
+.honor ol{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.honor li{
+  display:grid; grid-template-columns:30px 1fr auto; gap:10px; align-items:center;
+  padding:6px 10px; background:rgba(11,22,48,.06); border:1px solid rgba(11,22,48,.18); border-radius:10px;
+}
+.rank{width:28px; height:28px; display:grid; place-items:center; border-radius:50%; font:700 .85rem var(--arcade); color:var(--parchment); background:var(--ink)}
+.who{min-width:0; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.who small{display:block; font-size:.7rem; font-weight:400; color:var(--muted)}
+.pts{font:700 1rem var(--arcade)}
+.honor li.first{
+  background:linear-gradient(135deg,#fff0a8,#ffc83d 55%,#e8a812); border:2px solid var(--gold-dark);
+  box-shadow:0 3px 0 var(--gold-dark), 0 0 18px rgba(255,200,61,.65); padding:9px 10px;
+}
+.first .rank{background:var(--gold-dark); color:#ffe27a}
+.first .who{font:700 1.1rem var(--serif)}
+.first .who small{font:600 .72rem var(--body); color:#4d3708}
+.first .pts{font-size:1.15rem}
+.honor-empty{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.92rem}
+.link-btn{
+  display:block; margin:12px auto 0; padding:4px 8px; font:inherit; font-size:.8rem; color:var(--muted);
+  background:none; border:0; text-decoration:underline; cursor:pointer;
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  font:700 1rem var(--arcade); text-transform:uppercase; letter-spacing:.04em; cursor:pointer;
+  color:var(--ink); background:var(--parchment); padding:11px 20px;
+  border:4px solid var(--ink); border-radius:14px; box-shadow:0 6px 0 var(--ink);
+  transition:transform .08s, box-shadow .08s; touch-action:manipulation;
+}
+.btn:active{transform:translateY(5px); box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--gold)}
+.btn.big{font-size:clamp(1.15rem,5vw,1.4rem); padding:13px 34px}
+
+/* ---------- Modals (login + result) ---------- */
+.modal{
+  position:fixed; inset:0; z-index:10; display:flex; overflow:auto; padding:14px;
+  background:rgba(7,14,32,.88); backdrop-filter:blur(3px);
+}
+.card{
+  margin:auto; width:min(100%,520px); padding:20px 18px 18px; text-align:center;
+  color:var(--ink); background:var(--parchment);
+  border:5px solid var(--ink); border-radius:20px; box-shadow:0 0 0 3px var(--gold), 0 10px 0 3px #070e20;
+}
+.sub{margin:6px 0 16px; font:italic 1.05rem var(--serif); color:var(--muted)}
+#loginForm{display:grid; gap:6px; justify-items:center}
+#loginForm label{font-weight:700}
+#nameInput{
+  width:min(100%,340px); padding:11px 14px; font:700 1.1rem var(--body); text-align:center;
+  color:var(--ink); background:#fff; border:4px solid var(--ink); border-radius:12px;
+}
+#nameInput.bad{border-color:var(--blast); animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.err{min-height:1.3em; margin:0; color:var(--blast); font-weight:700; font-size:.92rem}
+
+.howto{margin-top:18px; padding-top:14px; text-align:left; border-top:3px dashed rgba(11,22,48,.3)}
+.howto h2{margin:0 0 10px; text-align:center; font:700 1.25rem var(--serif)}
+.howto ul{list-style:none; margin:0; padding:0; display:grid; gap:9px}
+.howto li{display:grid; grid-template-columns:62px 1fr; gap:10px; align-items:start; font-size:.95rem; line-height:1.35}
+.tag{
+  display:block; text-align:center; padding:2px 4px; font:700 .8rem var(--arcade);
+  color:var(--parchment); background:var(--navy2); border:2px solid var(--ink); border-radius:8px;
+}
+kbd{
+  display:inline-block; min-width:1.6em; margin:0 1px; padding:0 5px; text-align:center;
+  font:700 .85em/1.5 var(--body); background:#fff; border:2px solid var(--ink); border-bottom-width:4px; border-radius:6px;
+}
+
+/* Result */
+.grade{
+  width:98px; height:98px; margin:0 auto 8px; display:grid; place-items:center; transform:rotate(-8deg);
+  font:400 3.3rem/1 var(--stamp); color:var(--blast); border:6px solid currentColor; border-radius:50%;
+}
+.result.win .grade{color:var(--pass)}
+.result h2{margin:0; font:700 clamp(1.6rem,7vw,2.1rem)/1.1 var(--serif); color:var(--blast)}
+.result.win h2{color:var(--pass)}
+.result p{margin:8px 0 12px; line-height:1.35}
+.result-stats{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px}
+.result-stats div{padding:6px 4px; background:#fff; border:3px solid var(--ink); border-radius:12px}
+.result-stats span{display:block; font-size:.78rem; font-weight:700; color:var(--muted)}
+.result-stats b{font:700 1.5rem var(--arcade)}
+.rank-line{font-weight:700; font-family:var(--serif); font-size:1.05rem}
+.btn-row{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.btn-row .btn{padding:10px 16px; font-size:.92rem}
+
+@media (prefers-reduced-motion:reduce){
+  #toast.show,#nameInput.bad,.stat.low b{animation:none}
+}
