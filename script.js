@@ -42,7 +42,8 @@ const memory = {};
 function storeSet(key, value) {
   memory[key] = value;
   try { localStorage.setItem(key, value); } catch (e) {}
-}
+} 
+
 function storeGet(key) {
   try {
     const v = localStorage.getItem(key);
@@ -51,15 +52,19 @@ function storeGet(key) {
 }
 
 let audio = null, soundOn = storeGet('passorblast_sound') !== 'off', noiseBuf = null;
-function syncSoundButtons(){ document.querySelectorAll('[data-sound-toggle]').forEach(btn => { btn.textContent = soundOn ? '🔊 SOUND ON' : '🔇 SOUND OFF'; btn.setAttribute('aria-pressed', String(!soundOn)); }); const topMute=$('#muteBtn'); if(topMute){topMute.textContent=soundOn?'🔊':'🔇';topMute.setAttribute('aria-label',soundOn?'Turn sound off':'Turn sound on');} }
-function toggleSound(){ soundOn=!soundOn; storeSet('passorblast_sound',soundOn?'on':'off'); if(!soundOn && 'speechSynthesis' in window) window.speechSynthesis.cancel(); syncSoundButtons(); }
+
+function syncSoundButtons(){ document.querySelectorAll('[data-sound-toggle]').forEach(btn => { btn.textContent = soundOn ? '🔊 SOUND ON' : '🔇 SOUND OFF'; btn.setAttribute('aria-pressed', String(!soundOn)); }); const topMute=$('#muteBtn'); 
+if(topMute){topMute.textContent=soundOn?'🔊':'🔇';topMute.setAttribute('aria-label',soundOn?'Turn sound off':'Turn sound on');} }
+function toggleSound(){ soundOn=!soundOn; storeSet('passorblast_sound',soundOn?'on':'off'); 
+if(!soundOn && 'speechSynthesis' in window) window.speechSynthesis.cancel(); syncSoundButtons(); }
 
 function ensureAudio() {
   try {
-    if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
-    if (audio.state === 'suspended') audio.resume();
-  } catch (e) { audio = null; }
+       if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+       if (audio.state === 'suspended') audio.resume();
+      } catch (e) { audio = null; }
 }
+
 function beep(freq, dur, type = 'square', vol = 0.05, slide = 0) {
   if (!soundOn || !audio) return;
   const t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
@@ -71,6 +76,7 @@ function beep(freq, dur, type = 'square', vol = 0.05, slide = 0) {
   o.connect(g); g.connect(audio.destination);
   o.start(t); o.stop(t + dur);
 }
+
 function speak(text, pitch = 1, rate = 1) {
   if (!soundOn || !('speechSynthesis' in window)) return;
   try {
@@ -80,6 +86,7 @@ function speak(text, pitch = 1, rate = 1) {
     window.speechSynthesis.speak(u);
   } catch (e) {}
 }
+
 function rulerSmack() {
   stageEl.classList.add('smack');
   setTimeout(() => stageEl.classList.remove('smack'), 130);
@@ -89,6 +96,7 @@ function rulerSmack() {
     const d = noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
   }
+
   const src = audio.createBufferSource(), f = audio.createBiquadFilter(), g = audio.createGain();
   src.buffer = noiseBuf;
   f.type = 'bandpass'; f.frequency.value = 2200; f.Q.value = 0.8;
@@ -97,6 +105,7 @@ function rulerSmack() {
   src.start();
   beep(180, 0.09, 'sine', 0.14, -100);
 }
+
 function sfx(name) {
   switch (name) {
     case 'tick':  beep(240, .07, 'square', .05); break;
@@ -115,6 +124,7 @@ function updateHud() {
   hud.lives.textContent = lives > 0 ? '\u2665'.repeat(lives) : '0';
   hud.profs.textContent = professors.length;
 }
+
 function updateClock() {
   const shown = Math.ceil(Math.max(0, timeLeft));
   if (shown === lastShown) return;
@@ -122,6 +132,7 @@ function updateClock() {
   hud.time.textContent = fmtTime(shown);
   hud.time.parentElement.classList.toggle('low', shown <= 20 && state === 'playing');
 }
+
 function toast(msg, ms = 1500) {
   clearTimeout(toastTimer);
   toastEl.textContent = msg;
@@ -130,6 +141,7 @@ function toast(msg, ms = 1500) {
   toastEl.classList.add('show');
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms);
 }
+
 function addScore(n, x, y, text) {
   score += n;
   if (x !== undefined) floaters.push({ x, y, text: text || '+' + n, t: 1 });
